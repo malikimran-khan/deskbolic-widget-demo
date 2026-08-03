@@ -2,7 +2,7 @@ import { useEffect } from 'react'
 
 const DESKBOLIC_SCRIPT_ID = 'deskbolic-widget-script'
 const DESKBOLIC_SCRIPT_SRC =
-  'https://widget.deskbolic.com/w/952f1d40-77df-412d-8f2c-4ea36561b133/ac1c7f37-8b88-49c5-8faf-04ad1fb235fb/embed.js'
+  'https://widget.deskbolic.com/w/20848216-f418-4142-908b-e551bd0bd467/07119e89-487c-4034-9799-d49ec986fac4/embed.js'
 
 function DeskbolicWidget() {
   useEffect(() => {
