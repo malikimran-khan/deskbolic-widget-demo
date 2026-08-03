@@ -94,6 +94,25 @@
   gap: 12px;
 }
 
+.hero-widget-source {
+  grid-column: 1 / -1;
+  width: 100%;
+  margin-top: -18px;
+  padding: 18px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface);
+  text-align: left;
+}
+
+.hero-widget-source label {
+  display: block;
+  margin-bottom: 10px;
+  color: var(--text-h);
+  font-size: 16px;
+  font-weight: 800;
+}
+
 .primary-action,
 .secondary-action {
   padding: 0 18px;
@@ -249,62 +268,38 @@
   line-height: 1.55;
 }
 
-.widget-settings {
-  width: min(1120px, calc(100% - 40px));
-  margin: -48px auto 96px;
-  padding: 32px 0 0;
-  display: grid;
-  grid-template-columns: 0.75fr 1.25fr;
-  gap: 30px;
-  align-items: start;
-  border-top: 1px solid var(--border);
-  text-align: left;
-}
-
-.widget-settings h2 {
-  margin: 0;
-  color: var(--text-h);
-  font-size: 28px;
-  line-height: 1.18;
-  letter-spacing: 0;
-}
-
-.widget-form {
-  display: grid;
-  gap: 10px;
-}
-
-.widget-form label {
-  color: var(--text-h);
-  font-size: 14px;
-  font-weight: 800;
-}
-
 .widget-url-row {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto auto;
   gap: 10px;
 }
 
-.widget-url-row input {
+.widget-url-row textarea {
   min-width: 0;
-  min-height: 44px;
-  padding: 0 14px;
+  min-height: 72px;
+  padding: 12px 14px;
   border: 1px solid var(--border);
   border-radius: 6px;
   color: var(--text-h);
   background: #fff;
   font: inherit;
+  font-family:
+    ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono',
+    'Courier New', monospace;
+  font-size: 18px;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+  resize: vertical;
 }
 
-.widget-url-row input:focus {
+.widget-url-row textarea:focus {
   border-color: var(--accent);
   outline: 3px solid rgba(31, 111, 235, 0.14);
 }
 
 .widget-url-row button {
   min-width: 78px;
-  min-height: 44px;
+  min-height: 72px;
   padding: 0 16px;
   border: 1px solid var(--border);
   border-radius: 6px;
@@ -337,23 +332,11 @@
   font-weight: 700;
 }
 
-.current-widget-url {
-  margin: 0;
-  color: var(--muted);
-  font-family:
-    ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono',
-    'Courier New', monospace;
-  font-size: 13px;
-  line-height: 1.45;
-  overflow-wrap: anywhere;
-}
-
 @media (max-width: 860px) {
   .topbar,
   .hero-section,
   .services,
-  .support-band,
-  .widget-settings {
+  .support-band {
     width: min(100% - 32px, 680px);
   }
 
@@ -394,12 +377,6 @@
     grid-template-columns: 1fr;
     margin-bottom: 72px;
     padding: 28px;
-  }
-
-  .widget-settings {
-    grid-template-columns: 1fr;
-    margin-top: -32px;
-    margin-bottom: 72px;
   }
 }
 

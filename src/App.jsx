@@ -3,18 +3,30 @@ import heroImg from './assets/hero.png'
 import DeskbolicWidget from './DeskbolicWidget'
 import './App.css'
 
-const DEFAULT_WIDGET_URL =
+const OLD_DEFAULT_WIDGET_URL =
   'https://widget.deskbolic.com/w/20848216-f418-4142-908b-e551bd0bd467/07119e89-487c-4034-9799-d49ec986fac4/embed.js'
+const DEFAULT_WIDGET_URL =
+  'https://widget.deskbolic.com/w/20848216-f418-4142-908b-e551bd0bd467/49191618-7e62-47de-9305-7013265e5031/embed.js'
 const STORAGE_KEY = 'deskbolic-widget-url'
 
 function getInitialWidgetUrl() {
-  return localStorage.getItem(STORAGE_KEY) || DEFAULT_WIDGET_URL
+  const storedWidgetUrl = localStorage.getItem(STORAGE_KEY)
+
+  if (!storedWidgetUrl || storedWidgetUrl === OLD_DEFAULT_WIDGET_URL) {
+    return DEFAULT_WIDGET_URL
+  }
+
+  return storedWidgetUrl
 }
 
 function extractWidgetUrl(value) {
   const trimmedValue = value.trim()
   const srcMatch = trimmedValue.match(/\bsrc=(["'])(?<src>.*?)\1/i)
-  return srcMatch?.groups?.src || trimmedValue
+  const extractedUrl = srcMatch?.groups?.src || trimmedValue
+
+  if (extractedUrl.endsWith('/embed.js')) return extractedUrl
+
+  return `${extractedUrl.replace(/\/+$/, '')}/embed.js`
 }
 
 function App() {
@@ -90,6 +102,23 @@ function App() {
             </div>
           </div>
         </div>
+        <form className="hero-widget-source" onSubmit={handleWidgetSubmit}>
+          <label htmlFor="widget-url">Widget URL</label>
+          <div className="widget-url-row">
+            <textarea
+              id="widget-url"
+              value={draftWidgetUrl}
+              onChange={(event) => setDraftWidgetUrl(event.target.value)}
+              placeholder="http://localhost:3001/w/.../"
+              rows="2"
+            />
+            <button type="submit">Apply</button>
+            <button type="button" onClick={handleResetWidgetUrl}>
+              Reset
+            </button>
+          </div>
+          {urlError ? <p className="field-error">{urlError}</p> : null}
+        </form>
       </section>
 
       <section
@@ -129,30 +158,6 @@ function App() {
         </p>
       </section>
 
-      <section className="widget-settings" aria-labelledby="widget-settings-title">
-        <div>
-          <p className="eyebrow">Widget source</p>
-          <h2 id="widget-settings-title">Change the Deskbolic widget URL.</h2>
-        </div>
-        <form className="widget-form" onSubmit={handleWidgetSubmit}>
-          <label htmlFor="widget-url">Widget URL</label>
-          <div className="widget-url-row">
-            <input
-              id="widget-url"
-              type="text"
-              value={draftWidgetUrl}
-              onChange={(event) => setDraftWidgetUrl(event.target.value)}
-              placeholder="https://widget.deskbolic.com/w/.../embed.js"
-            />
-            <button type="submit">Apply</button>
-            <button type="button" onClick={handleResetWidgetUrl}>
-              Reset
-            </button>
-          </div>
-          {urlError ? <p className="field-error">{urlError}</p> : null}
-          <p className="current-widget-url">{widgetUrl}</p>
-        </form>
-      </section>
     </main>
   )
 }
