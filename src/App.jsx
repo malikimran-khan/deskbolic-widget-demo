@@ -1,9 +1,58 @@
+import { useState } from 'react'
 import heroImg from './assets/hero.png'
+import DeskbolicWidget from './DeskbolicWidget'
 import './App.css'
 
+const DEFAULT_WIDGET_URL =
+  'https://widget.deskbolic.com/w/20848216-f418-4142-908b-e551bd0bd467/07119e89-487c-4034-9799-d49ec986fac4/embed.js'
+const STORAGE_KEY = 'deskbolic-widget-url'
+
+function getInitialWidgetUrl() {
+  return localStorage.getItem(STORAGE_KEY) || DEFAULT_WIDGET_URL
+}
+
+function extractWidgetUrl(value) {
+  const trimmedValue = value.trim()
+  const srcMatch = trimmedValue.match(/\bsrc=(["'])(?<src>.*?)\1/i)
+  return srcMatch?.groups?.src || trimmedValue
+}
+
 function App() {
+  const [widgetUrl, setWidgetUrl] = useState(getInitialWidgetUrl)
+  const [draftWidgetUrl, setDraftWidgetUrl] = useState(widgetUrl)
+  const [urlError, setUrlError] = useState('')
+
+  function handleWidgetSubmit(event) {
+    event.preventDefault()
+
+    const nextUrl = extractWidgetUrl(draftWidgetUrl)
+
+    try {
+      const parsedUrl = new URL(nextUrl)
+
+      if (!['http:', 'https:'].includes(parsedUrl.protocol)) {
+        throw new Error('Unsupported protocol')
+      }
+
+      localStorage.setItem(STORAGE_KEY, parsedUrl.href)
+      setWidgetUrl(parsedUrl.href)
+      setDraftWidgetUrl(parsedUrl.href)
+      setUrlError('')
+    } catch {
+      setUrlError('Enter a valid widget script URL.')
+    }
+  }
+
+  function handleResetWidgetUrl() {
+    localStorage.removeItem(STORAGE_KEY)
+    setWidgetUrl(DEFAULT_WIDGET_URL)
+    setDraftWidgetUrl(DEFAULT_WIDGET_URL)
+    setUrlError('')
+  }
+
   return (
     <main className="home">
+      <DeskbolicWidget url={widgetUrl} />
       <nav className="topbar" aria-label="Primary navigation">
         <a className="brand" href="/">
           Deskbolic Demo
@@ -78,6 +127,31 @@ function App() {
           The widget script is already embedded on this page, so the launcher
           should appear automatically when the app loads.
         </p>
+      </section>
+
+      <section className="widget-settings" aria-labelledby="widget-settings-title">
+        <div>
+          <p className="eyebrow">Widget source</p>
+          <h2 id="widget-settings-title">Change the Deskbolic widget URL.</h2>
+        </div>
+        <form className="widget-form" onSubmit={handleWidgetSubmit}>
+          <label htmlFor="widget-url">Widget URL</label>
+          <div className="widget-url-row">
+            <input
+              id="widget-url"
+              type="text"
+              value={draftWidgetUrl}
+              onChange={(event) => setDraftWidgetUrl(event.target.value)}
+              placeholder="https://widget.deskbolic.com/w/.../embed.js"
+            />
+            <button type="submit">Apply</button>
+            <button type="button" onClick={handleResetWidgetUrl}>
+              Reset
+            </button>
+          </div>
+          {urlError ? <p className="field-error">{urlError}</p> : null}
+          <p className="current-widget-url">{widgetUrl}</p>
+        </form>
       </section>
     </main>
   )
